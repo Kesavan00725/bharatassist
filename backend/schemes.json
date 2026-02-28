@@ -1,0 +1,49 @@
+{
+  "version": "mvp-1",
+  "schemes": [
+    {
+      "id": "pm-kisan",
+      "name": "PM-KISAN",
+      "description": "Income support for eligible farmer families.",
+      "benefits": ["₹6,000 per year in 3 installments"],
+      "documents_required": ["Aadhaar", "Land Record", "Bank Passbook"],
+      "criteria": {
+        "occupation_any_of": ["farmer"],
+        "max_income_inr": 200000
+      }
+    },
+    {
+      "id": "pmjay",
+      "name": "Ayushman Bharat (PM-JAY)",
+      "description": "Health insurance cover for eligible families.",
+      "benefits": ["Up to ₹5,00,000 per family per year"],
+      "documents_required": ["Aadhaar", "Ration Card"],
+      "criteria": {
+        "max_income_inr": 300000,
+        "category_any_of": ["sc", "st", "obc", "ews", "general"]
+      }
+    },
+    {
+      "id": "pmuy",
+      "name": "Pradhan Mantri Ujjwala Yojana (PMUY)",
+      "description": "Free LPG connection for eligible women from low-income households.",
+      "benefits": ["LPG connection support", "Subsidy as applicable"],
+      "documents_required": ["Aadhaar", "BPL Certificate", "Bank Account"],
+      "criteria": {
+        "gender_any_of": ["female"],
+        "max_income_inr": 250000
+      }
+    },
+    {
+      "id": "nsap-old-age",
+      "name": "NSAP – Indira Gandhi National Old Age Pension",
+      "description": "Pension for senior citizens in need.",
+      "benefits": ["Monthly pension (varies by state/age)"],
+      "documents_required": ["Aadhaar", "Age Proof", "BPL Certificate"],
+      "criteria": {
+        "min_age": 60,
+        "max_income_inr": 200000
+      }
+    }
+  ]
+}
