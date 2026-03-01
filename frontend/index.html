@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>BharatAssist – MVP</title>
+    <title>BharatAssist – Find Government Schemes for You</title>
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
@@ -13,69 +13,126 @@
           <div class="logo" aria-hidden="true"></div>
           <div>
             <h1>BharatAssist</h1>
-            <p>Government Scheme Eligibility + Document Verification</p>
+            <p>Government Schemes Made Simple</p>
           </div>
         </div>
         <nav>
-          <a href="./index.html">Chat</a>
-          <a href="./eligibility.html">Eligibility</a>
+          <a href="./chat.html">Chat Assistant</a>
+          <a href="./eligibility.html">Check Eligibility</a>
         </nav>
       </header>
 
-      <div class="grid cols-2">
-        <section class="card">
-          <h2>Chat Assistant</h2>
-          <p class="hint">Ask about schemes, eligibility, and what documents you might need.</p>
-
-          <div class="row">
-            <div class="pill">Backend: <span id="apiStatus">checking…</span></div>
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-content">
+          <h2 class="hero-title">Find Government Schemes<br />That Support You</h2>
+          <p class="hero-description">
+            BharatAssist helps you discover and verify eligibility for government schemes.
+            Check your qualifications, understand requirements, and get the support you deserve.
+          </p>
+          <div class="hero-actions">
+            <a href="./eligibility.html" class="btn btn-primary">Check Your Eligibility</a>
+            <a href="./chat.html" class="btn btn-secondary">Ask Questions</a>
           </div>
+        </div>
+        <div class="hero-visual" aria-hidden="true">
+          <div class="hero-glyph"></div>
+        </div>
+      </section>
 
-          <div id="chat" class="chat" aria-live="polite"></div>
-
-          <div class="row cols-2" style="margin-top: 12px;">
-            <div>
-              <label for="message">Message</label>
-              <textarea id="message" placeholder="Example: I am 62 years old, income 1.5L, Tamil Nadu. What schemes can I apply for?"></textarea>
-            </div>
-            <div>
-              <label for="sessionId">Session ID (optional)</label>
-              <input id="sessionId" placeholder="Leave empty for auto" />
-              <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
-                <button id="sendBtn" class="btn">Send</button>
-                <button id="clearBtn" class="btn secondary">Clear chat</button>
-              </div>
-              <div class="footer">Tip: set `OPENAI_API_KEY` in backend to enable AI replies.</div>
-            </div>
+      <!-- Features Section -->
+      <section class="features">
+        <h3>How BharatAssist Works</h3>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon icon-check"></div>
+            <h4>Check Eligibility</h4>
+            <p>
+              Answer a few questions about your profile (age, income, state, category).
+              We'll match you with schemes you may qualify for.
+            </p>
           </div>
-        </section>
-
-        <aside class="card">
-          <h2>Hackathon Notes</h2>
-          <p class="hint">This MVP is intentionally simple.</p>
-          <div class="list">
-            <div class="scheme">
-              <h3>What works</h3>
-              <ul>
-                <li>Scheme list from JSON</li>
-                <li>Rule-based eligibility matching</li>
-                <li>Chat saved to SQLite</li>
-                <li>PDF keyword scan for required docs</li>
-              </ul>
-            </div>
-            <div class="scheme">
-              <h3>What to improve later</h3>
-              <ul>
-                <li>Real scheme dataset + official links</li>
-                <li>Better document OCR + structured extraction</li>
-                <li>Auth + per-user sessions</li>
-              </ul>
-            </div>
+          <div class="feature-card">
+            <div class="feature-icon icon-document"></div>
+            <h4>Verify Documents</h4>
+            <p>
+              Upload PDFs to verify required documents.
+              Our system checks for authenticity and extracts key information.
+            </p>
           </div>
-        </aside>
-      </div>
+          <div class="feature-card">
+            <div class="feature-icon icon-chat"></div>
+            <h4>Get Expert Guidance</h4>
+            <p>
+              Chat with our AI assistant for personalized questions about schemes,
+              requirements, and next steps in the application process.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Schemes Overview -->
+      <section class="schemes-overview">
+        <h3>Government Schemes Covered</h3>
+        <div class="schemes-list">
+          <div class="scheme-item">
+            <h4>PM-KISAN</h4>
+            <p>Direct income support for farmers</p>
+          </div>
+          <div class="scheme-item">
+            <h4>Ayushman Bharat</h4>
+            <p>Health insurance for eligible families</p>
+          </div>
+          <div class="scheme-item">
+            <h4>PM-UJJWALA</h4>
+            <p>Free LPG connections for households</p>
+          </div>
+          <div class="scheme-item">
+            <h4>NSAP</h4>
+            <p>Social assistance for elderly and vulnerable groups</p>
+          </div>
+        </div>
+        <p class="schemes-note">And more. Start with the eligibility checker to discover schemes you qualify for.</p>
+      </section>
+
+      <!-- Security Section -->
+      <section class="security">
+        <h3>Your Information is Secure</h3>
+        <div class="security-grid">
+          <div class="security-item">
+            <div class="security-icon">🔒</div>
+            <h4>Data Protected</h4>
+            <p>All your information is handled securely and never shared.</p>
+          </div>
+          <div class="security-item">
+            <div class="security-icon">✓</div>
+            <h4>Rule-Based Matching</h4>
+            <p>Deterministic algorithms ensure consistent and transparent results.</p>
+          </div>
+          <div class="security-item">
+            <div class="security-icon">📋</div>
+            <h4>No Hidden Requirements</h4>
+            <p>See exactly which criteria each scheme requires and which you meet.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA Section -->
+      <section class="cta-section">
+        <h3>Ready to Find Your Schemes?</h3>
+        <p>Answer a few quick questions to discover government schemes you may be eligible for.</p>
+        <a href="./eligibility.html" class="btn btn-primary btn-large">Start Eligibility Check</a>
+      </section>
+
+      <!-- Footer -->
+      <footer class="landing-footer">
+        <p>&copy; 2026 BharatAssist. Helping you access government support programs.</p>
+        <div class="footer-links">
+          <a href="#about">About</a>
+          <a href="#privacy">Privacy</a>
+          <a href="#terms">Terms</a>
+        </div>
+      </footer>
     </div>
-
-    <script src="./script.js"></script>
   </body>
 </html>

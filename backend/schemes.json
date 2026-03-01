@@ -7,9 +7,14 @@
       "description": "Income support for eligible farmer families.",
       "benefits": ["₹6,000 per year in 3 installments"],
       "documents_required": ["Aadhaar", "Land Record", "Bank Passbook"],
+      "official_link": "https://pmkisan.gov.in",
       "criteria": {
         "occupation_any_of": ["farmer"],
         "max_income_inr": 200000
+      },
+      "scoring_weights": {
+        "occupation_any_of": 50,
+        "max_income_inr": 50
       }
     },
     {
@@ -18,9 +23,14 @@
       "description": "Health insurance cover for eligible families.",
       "benefits": ["Up to ₹5,00,000 per family per year"],
       "documents_required": ["Aadhaar", "Ration Card"],
+      "official_link": "https://pmjay.gov.in",
       "criteria": {
         "max_income_inr": 300000,
         "category_any_of": ["sc", "st", "obc", "ews", "general"]
+      },
+      "scoring_weights": {
+        "max_income_inr": 40,
+        "category_any_of": 60
       }
     },
     {
@@ -29,9 +39,14 @@
       "description": "Free LPG connection for eligible women from low-income households.",
       "benefits": ["LPG connection support", "Subsidy as applicable"],
       "documents_required": ["Aadhaar", "BPL Certificate", "Bank Account"],
+      "official_link": "https://www.pmuy.gov.in",
       "criteria": {
         "gender_any_of": ["female"],
         "max_income_inr": 250000
+      },
+      "scoring_weights": {
+        "gender_any_of": 50,
+        "max_income_inr": 50
       }
     },
     {
@@ -40,9 +55,14 @@
       "description": "Pension for senior citizens in need.",
       "benefits": ["Monthly pension (varies by state/age)"],
       "documents_required": ["Aadhaar", "Age Proof", "BPL Certificate"],
+      "official_link": "https://nsap.nic.in",
       "criteria": {
         "min_age": 60,
         "max_income_inr": 200000
+      },
+      "scoring_weights": {
+        "min_age": 50,
+        "max_income_inr": 50
       }
     }
   ]

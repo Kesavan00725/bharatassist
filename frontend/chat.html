@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BharatAssist – Chat Assistant</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>BharatAssist</h1>
+            <p>Chat with our AI assistant</p>
+          </div>
+        </div>
+        <nav>
+          <a href="./index.html">Home</a>
+          <a href="./eligibility.html">Eligibility</a>
+        </nav>
+      </header>
+
+      <div class="grid cols-2">
+        <section class="card">
+          <h2>Chat Assistant</h2>
+          <p class="hint">Ask about schemes, eligibility, and what documents you might need.</p>
+
+          <div class="row">
+            <div class="pill">Backend: <span id="apiStatus">checking…</span></div>
+          </div>
+
+          <div id="chat" class="chat" aria-live="polite"></div>
+
+          <div class="row cols-2" style="margin-top: 12px;">
+            <div>
+              <label for="message">Message</label>
+              <textarea id="message" placeholder="Example: I am 62 years old, income 1.5L, Tamil Nadu. What schemes can I apply for?"></textarea>
+            </div>
+            <div>
+              <label for="sessionId">Session ID (optional)</label>
+              <input id="sessionId" placeholder="Leave empty for auto" />
+              <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <button id="sendBtn" class="btn">Send</button>
+                <button id="clearBtn" class="btn secondary">Clear chat</button>
+              </div>
+              <div class="footer">Tip: set `OPENAI_API_KEY` in backend to enable AI replies.</div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="card">
+          <h2>About This Chat</h2>
+          <p class="hint">Get personalized guidance about government schemes.</p>
+          <div class="list">
+            <div class="scheme">
+              <h3>How it works</h3>
+              <ul>
+                <li>Ask questions about schemes</li>
+                <li>Share your profile for tailored advice</li>
+                <li>Get document verification help</li>
+                <li>Continue conversations with session IDs</li>
+              </ul>
+            </div>
+            <div class="scheme">
+              <h3>Tips</h3>
+              <ul>
+                <li>Share your age, income, state, occupation</li>
+                <li>Ask about specific schemes</li>
+                <li>Request document guidance</li>
+                <li>Chat history is saved automatically</li>
+              </ul>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
