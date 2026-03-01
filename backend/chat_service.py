@@ -47,6 +47,127 @@ def get_or_create_session_id(session_id: Optional[str]) -> str:
     return uuid.uuid4().hex
 
 
+def _extract_profile_from_message(message: str) -> dict[str, Any]:
+    """Extract user profile from natural language message."""
+    import re
+
+    profile = {}
+    message_lower = message.lower()
+
+    # Extract age
+    age_match = re.search(r'(\d{1,3})\s*(?:years?|yr|yrs|age)', message_lower)
+    if age_match:
+        age = int(age_match.group(1))
+        if 0 <= age <= 120:
+            profile['age'] = age
+
+    # Extract income (look for numbers followed by lac/lakh/crore/rupees/inr/₹)
+    income_match = re.search(
+        r'(?:₹|rs|inr)?\s*(\d+(?:[.,]\d+)?)\s*(?:lac|lakh|crore|rupees?)?',
+        message_lower
+    )
+    if income_match:
+        income_str = income_match.group(1).replace(',', '')
+        income_num = float(income_str)
+        # Convert lakh to rupees if needed
+        if income_num < 100000:  # Assume if less than 1 lakh, multiply
+            if 'lakh' in message_lower or 'lac' in message_lower:
+                income_num *= 100000
+            elif 'crore' in message_lower:
+                income_num *= 10000000
+        profile['income_inr'] = int(income_num)
+
+    # Extract state
+    states = [
+        'andhra pradesh', 'arunachal pradesh', 'assam', 'bihar', 'chhattisgarh',
+        'goa', 'gujarat', 'haryana', 'himachal pradesh', 'jharkhand',
+        'karnataka', 'kerala', 'madhya pradesh', 'maharashtra', 'manipur',
+        'meghalaya', 'mizoram', 'nagaland', 'odisha', 'punjab', 'rajasthan',
+        'sikkim', 'tamil nadu', 'telangana', 'tripura', 'uttar pradesh',
+        'uttarakhand', 'west bengal', 'delhi'
+    ]
+    for state in states:
+        if state in message_lower:
+            profile['state'] = state.title()
+            break
+
+    # Extract occupation
+    occupations = ['farmer', 'student', 'retired', 'self-employed', 'employed',
+                   'unemployed', 'laborer', 'worker', 'trader', 'business']
+    for occupation in occupations:
+        if occupation in message_lower:
+            profile['occupation'] = occupation
+            break
+
+    # Check for disability mention
+    if 'disable' in message_lower or 'disabled' in message_lower or 'disability' in message_lower:
+        profile['is_disabled'] = True
+
+    # Check for rural mention
+    if 'rural' in message_lower or 'village' in message_lower:
+        profile['rural'] = True
+    elif 'urban' in message_lower or 'city' in message_lower:
+        profile['rural'] = False
+
+    # Check for category
+    categories = ['sc', 'st', 'obc', 'ews', 'general']
+    for cat in categories:
+        if cat in message_lower:
+            profile['category'] = cat.upper()
+            break
+
+    return profile
+
+
+def _format_eligibility_reply(results: dict[str, Any], profile: dict[str, Any]) -> str:
+    """Format eligibility results as a readable message."""
+    lines = []
+
+    # Add profile summary
+    profile_parts = []
+    if profile.get('age'):
+        profile_parts.append(f"Age: {profile['age']}")
+    if profile.get('income_inr'):
+        profile_parts.append(f"Income: ₹{profile['income_inr']:,}")
+    if profile.get('state'):
+        profile_parts.append(f"State: {profile['state']}")
+    if profile.get('occupation'):
+        profile_parts.append(f"Occupation: {profile['occupation']}")
+
+    if profile_parts:
+        lines.append(f"Profile: {', '.join(profile_parts)}\n")
+
+    # Add best match
+    if results.get('best_match'):
+        best = results['best_match']
+        lines.append(f"✓ BEST MATCH: {best['scheme_name']}")
+        lines.append(f"  Score: {best['score']}/100")
+        if best.get('benefits'):
+            lines.append(f"  Benefits: {', '.join(best['benefits'][:3])}")
+        lines.append("")
+
+    # Add eligible schemes count
+    eligible = results.get('eligible_schemes', [])
+    if eligible:
+        lines.append(f"✓ You are eligible for {len(eligible)} scheme(s):")
+        for scheme in eligible[:3]:  # Show top 3
+            lines.append(f"  • {scheme['scheme_name']} (Score: {scheme['score']}/100)")
+        if len(eligible) > 3:
+            lines.append(f"  ... and {len(eligible) - 3} more")
+        lines.append("")
+
+    # Add not eligible schemes count
+    not_eligible = results.get('not_eligible_schemes', [])
+    if not_eligible:
+        lines.append(f"✗ Not eligible for {len(not_eligible)} scheme(s)")
+        lines.append("")
+
+    # Add call to action
+    lines.append("Visit the eligibility checker page for detailed results and to verify documents.")
+
+    return "\n".join(lines)
+
+
 def _build_context_prompt(
     user_profile: dict[str, Any], eligibility_results: Optional[dict[str, Any]]
 ) -> str:
@@ -105,9 +226,21 @@ def chat_reply(
 
     client = _get_client()
     if client is None:
+        # Fallback when no OpenAI key: try to extract profile from message
+        from eligibility_engine import evaluate_eligibility
+
+        profile = _extract_profile_from_message(user_message)
+        if profile and any([profile.get("age"), profile.get("income_inr"), profile.get("state")]):
+            try:
+                results = evaluate_eligibility(profile)
+                reply = _format_eligibility_reply(results, profile)
+                insert_message(session_id, "assistant", reply)
+                return reply
+            except Exception:
+                pass
+
         reply = (
-            "OpenAI is not configured (missing `OPENAI_API_KEY`). "
-            "I can still help: tell me your age, annual income (INR), state, and occupation."
+            "I can help you find eligible schemes. Please tell me your age, annual income (INR), state, and occupation."
         )
         insert_message(session_id, "assistant", reply)
         return reply
@@ -162,10 +295,39 @@ def chat_reply_with_json(
 
     client = _get_client()
     if client is None:
+        # Fallback when no OpenAI key: try to extract profile from message
+        from eligibility_engine import evaluate_eligibility
+
+        profile = _extract_profile_from_message(user_message)
+        if profile and any([profile.get("age"), profile.get("income_inr"), profile.get("state")]):
+            try:
+                results = evaluate_eligibility(profile)
+                reply = _format_eligibility_reply(results, profile)
+                scheme_suggestions = [s["id"] for s in results.get("eligible_schemes", [])][:3]
+                response = {
+                    "reply": reply,
+                    "scheme_suggestions": scheme_suggestions,
+                    "clarification_needed": [],
+                }
+                insert_message(session_id, "assistant", reply)
+                return response
+            except Exception:
+                pass
+
+        missing = []
+        if not profile.get("age"):
+            missing.append("age")
+        if not profile.get("income_inr"):
+            missing.append("income_inr")
+        if not profile.get("state"):
+            missing.append("state")
+        if not profile.get("occupation"):
+            missing.append("occupation")
+
         response = {
-            "reply": "OpenAI is not configured (missing `OPENAI_API_KEY`). Please provide your profile details.",
+            "reply": "Please provide your profile details so I can suggest eligible schemes.",
             "scheme_suggestions": [],
-            "clarification_needed": ["age", "income_inr", "state", "occupation"],
+            "clarification_needed": missing or ["age", "income_inr", "state", "occupation"],
         }
         insert_message(session_id, "assistant", response["reply"])
         return response
