@@ -2,16 +2,16 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-# Copy requirements
-COPY requirements.txt .
+# Copy requirements (from backend directory)
+COPY backend/requirements.txt .
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 # Add gunicorn for production
 RUN pip install --no-cache-dir gunicorn
 
-# Copy application
-COPY . .
+# Copy application (from backend directory)
+COPY backend/ .
 
 # Expose port (Cloud Run uses $PORT env var)
 ENV PORT=8080
