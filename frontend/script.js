@@ -1,4 +1,12 @@
-const API_BASE = (localStorage.getItem("BHARATASSIST_API") || "http://localhost:8000").replace(/\/$/, "");
+// API Base URL configuration
+// For production deployment, set in browser console:
+// localStorage.setItem("BHARATASSIST_API", "https://bharatassist-backend-xxxxx.a.run.app");
+// OR set environment variable during deployment
+const API_BASE = (
+  localStorage.getItem("BHARATASSIST_API") ||
+  process.env.REACT_APP_API_BASE ||
+  "http://localhost:8000"
+).replace(/\/$/, "");
 
 function qs(id) {
   return document.getElementById(id);
