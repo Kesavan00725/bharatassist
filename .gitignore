@@ -1,0 +1,27 @@
+# Environment variables - DO NOT COMMIT
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+tmpclaude-*
+nul
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database (optional - comment out if you want to track)
+*.db
