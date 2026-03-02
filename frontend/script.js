@@ -111,6 +111,8 @@ function renderSchemeCard(scheme, showScore = false) {
   const benefits = (scheme.benefits || []).map((b) => `<li>${escapeHtml(b)}</li>`).join("");
   const docs = (scheme.documents_required || []).map((d) => `<li>${escapeHtml(d)}</li>`).join("");
   const rules = (scheme.reasons || []).map((r) => `<span class="pill">${escapeHtml(r)}</span>`).join(" ");
+  const officialLink = scheme.official_link || `#`;
+  const linkDisplay = officialLink && officialLink !== "#" ? `<a href="${escapeHtml(officialLink)}" target="_blank" rel="noopener noreferrer" class="btn secondary" style="font-size: 12px; padding: 6px 12px; text-decoration: none;">📋 Official Site</a>` : "";
 
   return `
     <div class="scheme">
@@ -118,6 +120,7 @@ function renderSchemeCard(scheme, showScore = false) {
         <div>
           <h3>${escapeHtml(scheme.name)} <span class="pill">${escapeHtml(scheme.id)}</span></h3>
           <p>${escapeHtml(scheme.description || "")}</p>
+          ${linkDisplay}
         </div>
         ${showScore ? `<div style="text-align: right; font-size: 24px; font-weight: bold; color: var(--accent);">${scheme.score}</div>` : ""}
       </div>
