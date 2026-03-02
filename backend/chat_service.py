@@ -62,19 +62,19 @@ def _extract_profile_from_message(message: str) -> dict[str, Any]:
             profile['age'] = age
 
     # Extract income (look for numbers followed by lac/lakh/crore/rupees/inr/₹)
+    # Match number that is followed by income keywords or preceded by currency symbols
     income_match = re.search(
-        r'(?:₹|rs|inr)?\s*(\d+(?:[.,]\d+)?)\s*(?:lac|lakh|crore|rupees?)?',
+        r'(?:₹|rs\.?|inr)?\s*(\d+(?:[.,]\d+)?)\s*(?:lac|lakh|crore|rupees?)',
         message_lower
     )
     if income_match:
         income_str = income_match.group(1).replace(',', '')
         income_num = float(income_str)
-        # Convert lakh to rupees if needed
-        if income_num < 100000:  # Assume if less than 1 lakh, multiply
-            if 'lakh' in message_lower or 'lac' in message_lower:
-                income_num *= 100000
-            elif 'crore' in message_lower:
-                income_num *= 10000000
+        # Determine multiplier based on keyword
+        if 'crore' in message_lower[income_match.start():income_match.end()]:
+            income_num *= 10000000
+        elif 'lakh' in message_lower[income_match.start():income_match.end()] or 'lac' in message_lower[income_match.start():income_match.end()]:
+            income_num *= 100000
         profile['income_inr'] = int(income_num)
 
     # Extract state
