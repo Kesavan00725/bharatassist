@@ -17,5 +17,5 @@ COPY backend/ .
 ENV PORT=8080
 EXPOSE 8080
 
-# Run with gunicorn (production-ready)
-CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 --access-logfile - --error-logfile - "main:app"
+# Run with gunicorn using uvicorn worker (for ASGI/FastAPI compatibility)
+CMD exec gunicorn --bind :$PORT --workers 1 --worker-class uvicorn.workers.UvicornWorker --timeout 0 --access-logfile - --error-logfile - "main:app"
